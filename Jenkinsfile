@@ -3,7 +3,11 @@ pipeline
     agent any
     stages
     {
+<<<<<<< HEAD
         stage('ContinuousDownload_Loans')
+=======
+        stage('ContinuousDownload_Master')
+>>>>>>> 4e71e35226bd1140466255cb2bb86126ee6dfe6c
         {
             steps
             {
@@ -22,7 +26,11 @@ pipeline
                
             }
         }
+<<<<<<< HEAD
          stage('ContinuousBuild_Loans')
+=======
+         stage('ContinuousBuild_Master')
+>>>>>>> 4e71e35226bd1140466255cb2bb86126ee6dfe6c
         {
             steps
             {
@@ -41,4 +49,76 @@ pipeline
                
             }
         }
+<<<<<<< HEAD
 
+=======
+        stage('ContinuousDeployment_Master')
+        {
+            steps
+            {
+                script
+                {
+                   try
+                   {
+                      sh label: '', script: 'scp /home/ubuntu/.jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war ubuntu@172.31.31.15:/var/lib/tomcat8/webapps/testwebapp.war'
+                   }
+                   catch(Exception e3)
+                   {
+                       mail bcc: '', body: 'Jenkins is unable to deploy into tomcat on the QaServers', cc: '', from: '', replyTo: '', subject: 'Deployment failed', to: 'middleware@outlook.com'
+                       exit(1)
+                   }
+                }
+                
+            }
+        }
+        stage('ContinuousTesting_Master')
+        {
+            steps
+            {
+                script
+                {
+                                    
+                    try
+                    {
+                        git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+                       sh label: '', script: 'java -jar /home/ubuntu/.jenkins/workspace/DeclarativePipeline/testing.jar'
+                    }
+                    catch(Exception e4)
+                    {
+                       mail bcc: '', body: 'Functional testing of the app on QAServers failed', cc: '', from: '', replyTo: '', subject: 'Testing failed', to: 'testers@outlook.com'
+                       exit(1)
+                    }
+                }
+                
+            }
+        }
+        stage('ContinuousDelivery_Master')
+        {
+            steps
+            {
+                script
+                {
+                   try
+                   { 
+                        input message: 'Waiting for Approval!', submitter: 'naresh'
+                        sh label: '', script: 'scp /home/ubuntu/.jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war ubuntu@172.31.26.41:/var/lib/tomcat8/webapps/prodwebapp.war' 
+                    }
+                    catch(Exception e5)
+                    {
+                         mail bcc: '', body: 'Unable to deploy into ProdServers', cc: '', from: '', replyTo: '', subject: 'Delivery failed', to: 'delevery@outlook.com'
+                    }
+                }
+            }
+        }
+       
+    }
+  
+       
+            
+    
+ 
+    
+    
+    
+}
+>>>>>>> 4e71e35226bd1140466255cb2bb86126ee6dfe6c
